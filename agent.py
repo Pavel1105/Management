@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 import anthropic
 
@@ -116,8 +117,12 @@ Rules:
 
 
 class ConsistencyAgent:
-    def __init__(self, api_key: str, model: str = MODELS[0]):
-        self.client = anthropic.Anthropic(api_key=api_key)
+    def __init__(self, api_key: str, model: str = MODELS[0], workspace_id: str | None = None):
+        # Keys that are not scoped to a workspace must name one on every request.
+        # Set ANTHROPIC_WORKSPACE_ID (Streamlit secret or environment variable) in that case.
+        workspace_id = (workspace_id or os.getenv("ANTHROPIC_WORKSPACE_ID", "")).strip()
+        headers = {"anthropic-workspace-id": workspace_id} if workspace_id else None
+        self.client = anthropic.Anthropic(api_key=api_key.strip(), default_headers=headers)
         self.model = model
 
     def _call_tool(self, system: str, prompt: str, tool: dict, max_tokens: int) -> dict:

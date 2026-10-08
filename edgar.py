@@ -3,9 +3,13 @@ from __future__ import annotations
 
 import re
 import time
+import warnings
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
+
+# SEC filings are often XHTML/inline-XBRL; parsing them as HTML is intended.
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 
 TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik}.json"
