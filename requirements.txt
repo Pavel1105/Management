@@ -1,0 +1,8 @@
+streamlit>=1.50
+anthropic>=0.40
+pandas
+requests
+beautifulsoup4
+lxml
+pypdf
+python-docx
